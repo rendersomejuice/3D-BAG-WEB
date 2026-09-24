@@ -1,0 +1,23 @@
+.text-white{
+  color:white;
+}
+
+.inline{
+  display: inline;
+  margin: 10px;
+}
+
+h1,h2,h3{
+  text-align: center;
+  color:white;
+}
+
+body{
+  background-color: black;
+}
+
+.model-viewer{
+  width: 800px;
+  height: 800px;
+  background: grey;
+}
