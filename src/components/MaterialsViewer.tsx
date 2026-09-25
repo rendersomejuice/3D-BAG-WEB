@@ -17,10 +17,15 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
 
   type MaterialBooleanProperty = "transparent";
 
-  function changeMaterialProperty(material:THREE.MeshStandardMaterial, value : number | boolean, property : MaterialNumericProperty | MaterialBooleanProperty ){
-    (material[property] as number | boolean) = value;
-    property === "transparent" ? material.needsUpdate = true : material.needsUpdate = false;
-    forceUpdate((prev) => prev + 1);
+  type MaterialColorProperty = "emissive" | "color";
+
+  function changeMaterialProperty(
+    material:THREE.MeshStandardMaterial, 
+    value : number | boolean | THREE.Color, 
+    property : MaterialNumericProperty | MaterialBooleanProperty | MaterialColorProperty ){
+      (material[property] as number | boolean | THREE.Color) = value;
+      property === "transparent" ? material.needsUpdate = true : material.needsUpdate = false;
+      forceUpdate((prev) => prev + 1);
   }
 
   const handleDiffuseChange = (material:THREE.MeshStandardMaterial, e:React.ChangeEvent<HTMLInputElement>) => {
@@ -60,10 +65,19 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
                       </label>
                       </span>
                     </li>
+                    <li>
+                      <span className="property-title">{'Color: '}</span>
+                      <span className="property">#{material.color.getHexString()}</span>
+                      <input type="color" id="color" value={`#${material.color.getHexString()}`} onChange={(e) => {changeMaterialProperty(material, new THREE.Color(e.target.value), 'color')} }></input>
+                    </li>
                     <li><span className="property-title">{'Normal: '}</span> <span className="property">{material.normalMap?.name}</span></li>
                     <li><span className="property-title">{'Ao: '}</span><span className="property">{material.aoMap?.name}</span></li>
                     <li><span className="property-title">{'Emissive map: '}</span><span className="property">{material.emissiveMap?.name}</span></li>
-                    <li><span className="property-title">{'Emissive color: '}</span><span className="property">#{material.emissive.getHexString()}</span></li>
+                    <li>
+                      <span className="property-title">{'Emissive color: '}</span>
+                      <span className="property">#{material.emissive.getHexString()}</span>
+                      <input type="color" id="color" value={`#${material.emissive.getHexString()}`} onChange={(e) => {changeMaterialProperty(material, new THREE.Color(e.target.value), 'emissive')} }></input>
+                    </li>
                     <li><span className="property-title">{'Alpha: '}</span><span className="property">{material.alphaMap?.name}</span></li>
                     <li>
                       <span className="property-title">{'Transparent: '}</span>
