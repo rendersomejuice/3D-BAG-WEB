@@ -21,3 +21,30 @@ body{
   height: 800px;
   background: grey;
 }
+
+.viewer-container {
+    display: flex;
+    align-items: stretch;
+}
+
+.materials-panel {
+    width: 357px;
+    height: 760px;
+    flex-shrink: 0;
+    padding: 20px;
+    background: #1a1a1a;
+    border-left: 1px solid #333;
+    overflow-y: scroll;
+}
+
+ul{
+  list-style-type: none;
+}
+
+.property-title{
+  font-size: 1.1em;
+}
+
+.property{
+  color: grey;
+}

@@ -2,38 +2,54 @@ import { Center, OrbitControls, useGLTF } from "@react-three/drei";
 import { Canvas, useLoader } from "@react-three/fiber"
 import { useEffect, useState } from "react"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
-import { standardizeMaterials } from "../utils/StandarizeMaterials";
+import { standarizeMaterials, getMaterials } from "../utils/StandarizeMaterials";
+import MaterialsViewer from "../components/MaterialsViewer";
+import * as THREE from "three";
 
 export interface ModelFile{
     file:File | null
 }
 
-const ModelLoader = ({ url, extension }: { url: string, extension: string }) => {
+interface ModelLoaderProps {
+    url: string;
+    extension: string;
+    onMaterialsLoaded: (materials: THREE.MeshStandardMaterial[]) => void;
+}
 
-  switch(extension){
-    case "glb":
+const ModelLoader = ({ url, extension, onMaterialsLoaded}: ModelLoaderProps) => {
+
+    let model: THREE.Object3D | null = null;
+
+    if(extension === 'glb'){
         const { scene } =  useGLTF(url); 
-        return (
-            <Center>
-                <primitive object={scene} />
-            </Center>
-        );
-
-    case "fbx":
+        model = scene;
+    }else if(extension === 'fbx'){
         const fbx = useLoader(FBXLoader, url);
-        standardizeMaterials(fbx);
-        return (
-            <Center>
-                <primitive object={fbx} />
-            </Center>
-        );
-  }
+        model = fbx;
+        standarizeMaterials(fbx);
+    }
+
+    useEffect(() => {
+        if(model) {
+            const materials = getMaterials(model);
+            onMaterialsLoaded(materials); // Enviamos los materiales al padre
+        }
+    },[model, onMaterialsLoaded]);
+
+    if (!model) return null;
+
+    return (
+        <Center>
+            <primitive object={model} />
+        </Center>
+    );
   
 };
 
 const ModelViewer = ({file}:ModelFile) => {
 
     const [modelURL, setModelURL] = useState<string | null>(null);
+    const [materials, setMaterials] = useState<THREE.MeshStandardMaterial[]>([]);
     const extension = file?.name.split(".").pop()?.toLowerCase();
 
     useEffect(() => {
@@ -45,19 +61,26 @@ const ModelViewer = ({file}:ModelFile) => {
 
         return () => {
             URL.revokeObjectURL(url);
+            setMaterials([]);
         };
 
     },[file]);
 
   return (
-    <div className="model-viewer">
-        <Canvas>
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[10, 10, 5]} intensity={1} />
-            {modelURL && extension && <ModelLoader url={modelURL} extension={extension}/>}
-            <OrbitControls enableDamping />
-        </Canvas>
+    <div className="viewer-container">
+        <div className="model-viewer">
+            <Canvas>
+                <ambientLight intensity={0.5} />
+                <directionalLight position={[10, 10, 5]} intensity={1} />
+                {modelURL && extension && <ModelLoader url={modelURL} extension={extension} onMaterialsLoaded={setMaterials}/>}
+                <OrbitControls enableDamping />
+            </Canvas>
+        </div>
+        <div className="materials-panel">
+            <MaterialsViewer materials={materials}/>
+        </div>
     </div>
+
   )
 }
 

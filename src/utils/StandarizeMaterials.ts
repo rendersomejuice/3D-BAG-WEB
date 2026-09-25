@@ -37,7 +37,7 @@ const convertMaterial = (material: THREE.Material): THREE.Material => {
 };
 
 
-export const standardizeMaterials = (object: THREE.Object3D) => {
+export const standarizeMaterials = (object: THREE.Object3D) => {
 
     object.traverse((child) => {
 
@@ -58,3 +58,21 @@ export const standardizeMaterials = (object: THREE.Object3D) => {
     });
 
 };
+
+export const getMaterials = ( object : THREE.Object3D) => {
+    var materialsArray : THREE.MeshStandardMaterial[] = [];
+    object.traverse((child) => {
+        
+        if(!(child instanceof THREE.Mesh)) return;
+
+        if(Array.isArray(child.material)){
+            child.material.forEach((material) =>
+                materialsArray.push(material)
+            );
+        }else{
+            materialsArray.push(child.material)
+        }
+    });
+
+    return materialsArray;
+}
