@@ -20,7 +20,7 @@ const Interface = () => {
     }
 
     return (
-        <section>
+        <section className="general-section">
             <h1>3D BAG WEB</h1>
             <ModelViewer file={file}/>
             <input ref={fileInputRef} type="file" accept=".fbx, .obj, .glb" onChange={handleFileChange} style={{display:'none'}}/>

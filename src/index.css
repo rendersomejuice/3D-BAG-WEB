@@ -48,3 +48,8 @@ ul{
 .property{
   color: grey;
 }
+
+.general-section{
+    width: fit-content;
+    margin: 0 auto;
+}
