@@ -19,6 +19,8 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
 
   type MaterialColorProperty = "emissive" | "color";
 
+  type MaterialTextureProperty = "map" | "emissiveMap" | "aoMap" | "alphaMap" | "normalMap";
+
   function changeMaterialProperty(
     material:THREE.MeshStandardMaterial, 
     value : number | boolean | THREE.Color, 
@@ -28,17 +30,17 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
       forceUpdate((prev) => prev + 1);
   }
 
-  const handleDiffuseChange = (material:THREE.MeshStandardMaterial, e:React.ChangeEvent<HTMLInputElement>) => {
+  const handleTextureChange = (material:THREE.MeshStandardMaterial, e:React.ChangeEvent<HTMLInputElement>, property : MaterialTextureProperty) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const url = URL.createObjectURL(file);
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(url, (texture) => {
 
-        texture.colorSpace = THREE.SRGBColorSpace;
+        property === "map" || "emissiveMap"? texture.colorSpace =  THREE.SRGBColorSpace : texture.colorSpace =  THREE.NoColorSpace;
         texture.name = file.name;
 
-        material.map = texture;
+        material[property] = texture;
         material.needsUpdate = true;
 
         forceUpdate((prev) => prev + 1);
@@ -55,47 +57,94 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
               <div key={index} className="text-white">
                   {material.name}
                   <ul>
+
                     <li>
                       <span className="property-title">{'Diffuse: '}</span> 
                       <span className="property-container">
                       <span className="property">{material.map?.name}</span>
                       <label className="property-button">
                         ...
-                        <input type="file" accept=".png, .jpg, .jpeg" onChange={(e) =>{handleDiffuseChange(material, e)}} style={{ display: "none" }}/>
+                        <input type="file" accept=".png, .jpg, .jpeg" onChange={(e) =>{handleTextureChange(material, e, 'map')}} style={{ display: "none" }}/>
                       </label>
                       </span>
                     </li>
+
                     <li>
                       <span className="property-title">{'Color: '}</span>
                       <span className="property">#{material.color.getHexString()}</span>
                       <input type="color" id="color" value={`#${material.color.getHexString()}`} onChange={(e) => {changeMaterialProperty(material, new THREE.Color(e.target.value), 'color')} }></input>
                     </li>
-                    <li><span className="property-title">{'Normal: '}</span> <span className="property">{material.normalMap?.name}</span></li>
-                    <li><span className="property-title">{'Ao: '}</span><span className="property">{material.aoMap?.name}</span></li>
-                    <li><span className="property-title">{'Emissive map: '}</span><span className="property">{material.emissiveMap?.name}</span></li>
+
+                    <li>
+                      <span className="property-title">{'Normal Map: '}</span> 
+                      <span className="property-container">
+                      <span className="property">{material.normalMap?.name}</span>
+                      <label className="property-button">
+                        ...
+                        <input type="file" accept=".png, .jpg, .jpeg" onChange={(e) =>{handleTextureChange(material, e, 'normalMap')}} style={{ display: "none" }}/>
+                      </label>
+                      </span>
+                    </li>
+
+                    <li>
+                      <span className="property-title">{'AO Map: '}</span> 
+                      <span className="property-container">
+                      <span className="property">{material.aoMap?.name}</span>
+                      <label className="property-button">
+                        ...
+                        <input type="file" accept=".png, .jpg, .jpeg" onChange={(e) =>{handleTextureChange(material, e, 'aoMap')}} style={{ display: "none" }}/>
+                      </label>
+                      </span>
+                    </li>
+
+                    <li>
+                      <span className="property-title">{'Emissive Map: '}</span> 
+                      <span className="property-container">
+                      <span className="property">{material.emissiveMap?.name}</span>
+                      <label className="property-button">
+                        ...
+                        <input type="file" accept=".png, .jpg, .jpeg" onChange={(e) =>{handleTextureChange(material, e, 'emissiveMap')}} style={{ display: "none" }}/>
+                      </label>
+                      </span>
+                    </li>
+
                     <li>
                       <span className="property-title">{'Emissive color: '}</span>
                       <span className="property">#{material.emissive.getHexString()}</span>
                       <input type="color" id="color" value={`#${material.emissive.getHexString()}`} onChange={(e) => {changeMaterialProperty(material, new THREE.Color(e.target.value), 'emissive')} }></input>
                     </li>
-                    <li><span className="property-title">{'Alpha: '}</span><span className="property">{material.alphaMap?.name}</span></li>
+
+                    <li>
+                      <span className="property-title">{'Alpha Map: '}</span> 
+                      <span className="property-container">
+                      <span className="property">{material.alphaMap?.name}</span>
+                      <label className="property-button">
+                        ...
+                        <input type="file" accept=".png, .jpg, .jpeg" onChange={(e) =>{handleTextureChange(material, e, 'alphaMap')}} style={{ display: "none" }}/>
+                      </label>
+                      </span>
+                    </li>
+
                     <li>
                       <span className="property-title">{'Transparent: '}</span>
-                      <span className="property">{material.transparent? 'yes' : 'no'}</span>
                       <input type='checkbox' checked={material.transparent} onChange={(e) => {changeMaterialProperty(material, Number(e.target.checked), 'transparent')}}/>
                     </li>
+
                     {(material.transparent) &&<li>
                       <span className="property-title">{'Opacity: '}</span><span className="property">{material.opacity.toFixed(2)}</span>
                       <input type="range" min={0} max={1} step={0.01} value={material.opacity} onChange={(e) => {changeMaterialProperty(material, Number(e.target.value), 'opacity')}}/>
                     </li>}
+
                     <li>
                       <span className="property-title">{'Roughness: '}</span><span className="property">{material.roughness.toFixed(2)}</span>
                       <input type="range" min={0} max={1} step={0.01} value={material.roughness} onChange={(e) => {changeMaterialProperty(material, Number(e.target.value), 'roughness')}}/>
                     </li>
+
                     <li>
                       <span className="property-title">{'Metallness: '}</span><span className="property">{material.metalness.toFixed(2)}</span>
                       <input type="range" min={0} max={1} step={0.01} value={material.metalness} onChange={(e) => {changeMaterialProperty(material, Number(e.target.value), 'metalness')}}/>
                     </li>
+
                   </ul>
               </div>
           ))}
