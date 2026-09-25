@@ -7,7 +7,7 @@ const convertMaterial = (material: THREE.Material): THREE.Material => {
         const standardMaterial = new THREE.MeshStandardMaterial({
             name: material.name,
 
-            color: material.color.clone(),
+            color: new THREE.Color(0xffffff),
 
             map: material.map,
 
@@ -16,7 +16,7 @@ const convertMaterial = (material: THREE.Material): THREE.Material => {
 
             aoMap: material.aoMap,
 
-            emissive: material.emissive.clone(),
+            emissive: new THREE.Color(0x000000),
             emissiveMap: material.emissiveMap,
 
             alphaMap: material.alphaMap,

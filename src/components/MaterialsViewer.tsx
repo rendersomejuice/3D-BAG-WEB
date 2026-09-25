@@ -5,18 +5,41 @@ interface MaterialsViewerProps {
   materials: THREE.MeshStandardMaterial[];
 }
 
+export interface TextureFile{
+    file:THREE.Texture | null
+}
+
 const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
 
   const [, forceUpdate] = useState(0); //we use forceupdate to avoid creating a state for every property
 
-  const handleRoughnessChange = (material:THREE.MeshStandardMaterial, value : number) => {
-    material.roughness = value;
+  type MaterialNumericProperty = "roughness" | "metalness" | "opacity";
+
+  type MaterialBooleanProperty = "transparent";
+
+  function changeMaterialProperty(material:THREE.MeshStandardMaterial, value : number | boolean, property : MaterialNumericProperty | MaterialBooleanProperty ){
+    (material[property] as number | boolean) = value;
+    property === "transparent" ? material.needsUpdate = true : material.needsUpdate = false;
     forceUpdate((prev) => prev + 1);
   }
 
-  const handleMetalnessChange = (material:THREE.MeshStandardMaterial, value : number) => {
-    material.metalness = value;
-    forceUpdate((prev) => prev + 1);
+  const handleDiffuseChange = (material:THREE.MeshStandardMaterial, e:React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load(url, (texture) => {
+
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.name = file.name;
+
+        material.map = texture;
+        material.needsUpdate = true;
+
+        forceUpdate((prev) => prev + 1);
+
+        URL.revokeObjectURL(url);
+    });
   }
 
     return (
@@ -27,19 +50,37 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
               <div key={index} className="text-white">
                   {material.name}
                   <ul>
-                    <li><span className="property-title">{'Diffuse: '}</span> <span className="property">{material.map?.name}</span></li>
+                    <li>
+                      <span className="property-title">{'Diffuse: '}</span> 
+                      <span className="property-container">
+                      <span className="property">{material.map?.name}</span>
+                      <label className="property-button">
+                        ...
+                        <input type="file" accept=".png, .jpg, .jpeg" onChange={(e) =>{handleDiffuseChange(material, e)}} style={{ display: "none" }}/>
+                      </label>
+                      </span>
+                    </li>
                     <li><span className="property-title">{'Normal: '}</span> <span className="property">{material.normalMap?.name}</span></li>
                     <li><span className="property-title">{'Ao: '}</span><span className="property">{material.aoMap?.name}</span></li>
                     <li><span className="property-title">{'Emissive map: '}</span><span className="property">{material.emissiveMap?.name}</span></li>
                     <li><span className="property-title">{'Emissive color: '}</span><span className="property">#{material.emissive.getHexString()}</span></li>
                     <li><span className="property-title">{'Alpha: '}</span><span className="property">{material.alphaMap?.name}</span></li>
-                    <li><span className="property-title">{'Transparent: '}</span><span className="property">{material.transparent? 'yes' : 'no'}</span></li>
-                    <li><span className="property-title">{'Opacity: '}</span><span className="property">{material.opacity}</span></li>
-                    <li><span className="property-title">{'Roughness: '}</span><span className="property">{material.roughness.toFixed(2)}</span>
-                      <input type="range" min={0} max={1} step={0.01} value={material.roughness} onChange={(e) => {handleRoughnessChange(material, Number(e.target.value))}}/>
+                    <li>
+                      <span className="property-title">{'Transparent: '}</span>
+                      <span className="property">{material.transparent? 'yes' : 'no'}</span>
+                      <input type='checkbox' checked={material.transparent} onChange={(e) => {changeMaterialProperty(material, Number(e.target.checked), 'transparent')}}/>
                     </li>
-                    <li><span className="property-title">{'Metallness: '}</span><span className="property">{material.metalness}</span>
-                      <input type="range" min={0} max={1} step={0.01} value={material.metalness} onChange={(e) => {handleMetalnessChange(material, Number(e.target.value))}}/>
+                    {(material.transparent) &&<li>
+                      <span className="property-title">{'Opacity: '}</span><span className="property">{material.opacity.toFixed(2)}</span>
+                      <input type="range" min={0} max={1} step={0.01} value={material.opacity} onChange={(e) => {changeMaterialProperty(material, Number(e.target.value), 'opacity')}}/>
+                    </li>}
+                    <li>
+                      <span className="property-title">{'Roughness: '}</span><span className="property">{material.roughness.toFixed(2)}</span>
+                      <input type="range" min={0} max={1} step={0.01} value={material.roughness} onChange={(e) => {changeMaterialProperty(material, Number(e.target.value), 'roughness')}}/>
+                    </li>
+                    <li>
+                      <span className="property-title">{'Metallness: '}</span><span className="property">{material.metalness.toFixed(2)}</span>
+                      <input type="range" min={0} max={1} step={0.01} value={material.metalness} onChange={(e) => {changeMaterialProperty(material, Number(e.target.value), 'metalness')}}/>
                     </li>
                   </ul>
               </div>

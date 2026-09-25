@@ -28,7 +28,7 @@ body{
 }
 
 .materials-panel {
-    width: 357px;
+    width: 400px;
     height: 760px;
     flex-shrink: 0;
     padding: 20px;
@@ -47,6 +47,23 @@ ul{
 
 .property{
   color: grey;
+}
+
+.property-container{
+  display: inline-flex;
+}
+
+.property-button{
+  margin-left: 10px;
+  height: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: black;
+  border-radius: 5px;
+  border: 1px solid;
+  cursor: pointer;
 }
 
 .general-section{
