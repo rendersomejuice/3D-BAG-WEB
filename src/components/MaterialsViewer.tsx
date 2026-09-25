@@ -31,14 +31,17 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
   }
 
   const handleTextureChange = (material:THREE.MeshStandardMaterial, e:React.ChangeEvent<HTMLInputElement>, property : MaterialTextureProperty) => {
+    const oldTexture = material[property];
     const file = e.target.files?.[0];
     if (!file) return;
     const url = URL.createObjectURL(file);
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(url, (texture) => {
 
-        property === "map" || "emissiveMap"? texture.colorSpace =  THREE.SRGBColorSpace : texture.colorSpace =  THREE.NoColorSpace;
+        (property === "map" || property === "emissiveMap") ? texture.colorSpace =  THREE.SRGBColorSpace : texture.colorSpace =  THREE.NoColorSpace;
         texture.name = file.name;
+
+        if (oldTexture) texture.flipY = oldTexture.flipY; //copy texture orientation from previous texture if existent
 
         material[property] = texture;
         material.needsUpdate = true;
@@ -47,6 +50,11 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
 
         URL.revokeObjectURL(url);
     });
+  }
+
+  const handleInvertNormal = (material:THREE.MeshStandardMaterial, value : boolean) => {
+    material.normalScale.y = value ? -Math.abs(material.normalScale.y) : Math.abs(material.normalScale.y);
+    forceUpdate((prev) => prev + 1);
   }
 
     return (
@@ -84,6 +92,11 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
                         <input type="file" accept=".png, .jpg, .jpeg" onChange={(e) =>{handleTextureChange(material, e, 'normalMap')}} style={{ display: "none" }}/>
                       </label>
                       </span>
+                    </li>
+
+                    <li>
+                      <span className="property-title">Invert Normal:</span>
+                      <input type='checkbox' checked={material.normalScale.y < 0} onChange={(e) => {handleInvertNormal(material, e.target.checked)}}/> 
                     </li>
 
                     <li>
