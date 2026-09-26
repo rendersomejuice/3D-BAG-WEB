@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 import { standarizeMaterials, getMaterials } from "../utils/StandarizeMaterials";
 import MaterialsViewer from "../components/MaterialsViewer";
+import FPSLimiter from "../components/utils/FPSLimiter"
 import * as THREE from "three";
 
 export interface ModelFile{
@@ -69,11 +70,12 @@ const ModelViewer = ({file}:ModelFile) => {
   return (
     <div className="viewer-container">
         <div className="model-viewer">
-            <Canvas>
+            <Canvas dpr={1}>
                 <ambientLight intensity={0.5} />
                 <directionalLight position={[10, 10, 5]} intensity={1} />
                 {modelURL && extension && <ModelLoader url={modelURL} extension={extension} onMaterialsLoaded={setMaterials}/>}
                 <OrbitControls enableDamping />
+                <FPSLimiter/>
             </Canvas>
         </div>
         <div className="materials-panel">
