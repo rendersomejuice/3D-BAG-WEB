@@ -38,10 +38,10 @@ const EnvironmentSettings = ({shadowplaneActive, setshadowplaneActive, changeDir
             <hr/>
             <ul>
                 <div className="property-title">Directional Light: </div>
-                <div><span className="property">X:</span><input type="range" min={-20} max={20} value={directionalLightPosition.x} onChange={(e) => {changeDirectionalLightPosition("x", Number(e.target.value))}}/></div>
-                <div><span className="property">Y:</span><input type="range" min={-20} max={20} value={directionalLightPosition.y} onChange={(e) => {changeDirectionalLightPosition("y", Number(e.target.value))}}/></div>
-                <div><span className="property">Z:</span><input type="range" min={-20} max={20} value={directionalLightPosition.z} onChange={(e) => {changeDirectionalLightPosition("z", Number(e.target.value))}}/></div>
-                <div><span className="property">Intensity:</span><input type="range" min={-20} max={20} value={directionalLightIntensity} onChange={(e) => {setdirectionalLightIntensity(Number(e.target.value))}}/></div>
+                <div><span className="property">X:</span><input type="range" min={-300} max={300} value={directionalLightPosition.x} onChange={(e) => {changeDirectionalLightPosition("x", Number(e.target.value))}}/>{directionalLightPosition.x}</div>
+                <div><span className="property">Y:</span><input type="range" min={10} max={300} value={directionalLightPosition.y} onChange={(e) => {changeDirectionalLightPosition("y", Number(e.target.value))}}/>{directionalLightPosition.y}</div>
+                <div><span className="property">Z:</span><input type="range" min={-200} max={200} value={directionalLightPosition.z} onChange={(e) => {changeDirectionalLightPosition("z", Number(e.target.value))}}/>{directionalLightPosition.z}</div>
+                <div><span className="property">Intensity:</span><input type="range" min={0} max={100} value={directionalLightIntensity} onChange={(e) => {setdirectionalLightIntensity(Number(e.target.value))}}/>{directionalLightIntensity}</div>
             </ul>
         </div>
     )
