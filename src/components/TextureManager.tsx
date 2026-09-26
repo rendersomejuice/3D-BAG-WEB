@@ -5,12 +5,13 @@ interface TextureManagerProps{
     material: THREE.MeshStandardMaterial,
     property: MaterialTextureProperty,
     displayName: string,
+    forceUpdate: (prev:any) => void
 }
 
 export type MaterialTextureProperty = "map" | "emissiveMap" | "aoMap" | "alphaMap" | "normalMap" | "roughnessMap" | "metalnessMap";
 
-const TextureManager = ({material, property, displayName}:TextureManagerProps) => {
-    const [, forceUpdate] = useState(0); //we use forceupdate to avoid creating a state for every property ||||TO-DO !!!! extract this to a util or external file or keep it in the father
+const TextureManager = ({material, property, displayName, forceUpdate}:TextureManagerProps) => {
+
     const [lastTexture, setLastTexture] = useState<THREE.Texture | null>(material[property]);
 
     const handleTextureChange = (material:THREE.MeshStandardMaterial, e:React.ChangeEvent<HTMLInputElement>, property : MaterialTextureProperty) => {
@@ -39,7 +40,7 @@ const TextureManager = ({material, property, displayName}:TextureManagerProps) =
         material[property] = texture;
         material.needsUpdate = true;
 
-        forceUpdate((prev) => prev + 1);
+        forceUpdate((prev:any) => prev + 1);
 
         URL.revokeObjectURL(url);
     });
@@ -54,7 +55,7 @@ const dropTexture = (material:THREE.MeshStandardMaterial, property : MaterialTex
 
     material[property] = null;
     material.needsUpdate = true;
-    forceUpdate((prev) => prev + 1);
+    forceUpdate((prev:any) => prev + 1);
 }
     
     return (

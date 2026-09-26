@@ -43,7 +43,7 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
                   {material.name}
                   <ul>
 
-                    <TextureManager material={material} property={'map'} displayName="Diffuse Map: "/>
+                    <TextureManager material={material} property={'map'} displayName="Diffuse Map: " forceUpdate={forceUpdate}/>
 
                     <li>
                       <span className="property-title">{'Color: '}</span>
@@ -51,16 +51,16 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
                       <input type="color" id="color" value={`#${material.color.getHexString()}`} onChange={(e) => {changeMaterialProperty(material, new THREE.Color(e.target.value), 'color')} }></input>
                     </li>
 
-                    <TextureManager material={material} property={'normalMap'} displayName="Normal Map: "/>
+                    <TextureManager material={material} property={'normalMap'} displayName="Normal Map: " forceUpdate={forceUpdate}/>
 
                     <li>
                       <span className="property-title">Invert Normal:</span>
                       <input type='checkbox' checked={material.normalScale.y < 0} onChange={(e) => {handleInvertNormal(material, e.target.checked)}}/> 
                     </li>
 
-                    <TextureManager material={material} property={'aoMap'} displayName="AO Map: "/>
+                    <TextureManager material={material} property={'aoMap'} displayName="AO Map: " forceUpdate={forceUpdate}/>
 
-                    <TextureManager material={material} property={'emissiveMap'} displayName="Emissive Map: "/>
+                    <TextureManager material={material} property={'emissiveMap'} displayName="Emissive Map: " forceUpdate={forceUpdate}/>
 
                     <li>
                       <span className="property-title">{'Emissive color: '}</span>
@@ -68,7 +68,7 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
                       <input type="color" id="color" value={`#${material.emissive.getHexString()}`} onChange={(e) => {changeMaterialProperty(material, new THREE.Color(e.target.value), 'emissive')} }></input>
                     </li>
 
-                    <TextureManager material={material} property={'alphaMap'} displayName="Alpha Map: "/>
+                    <TextureManager material={material} property={'alphaMap'} displayName="Alpha Map: " forceUpdate={forceUpdate}/>
 
                     <li>
                       <span className="property-title">{'Transparent: '}</span>
@@ -85,14 +85,14 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
                       <input type="range" min={0} max={1} step={0.01} value={material.roughness} onChange={(e) => {changeMaterialProperty(material, Number(e.target.value), 'roughness')}}/>
                     </li>
 
-                    <TextureManager material={material} property={'roughnessMap'} displayName="Roughness Map: "/>
+                    <TextureManager material={material} property={'roughnessMap'} displayName="Roughness Map: " forceUpdate={forceUpdate}/>
 
                     <li>
                       <span className="property-title">{'Metallness: '}</span><span className="property">{material.metalness.toFixed(2)}</span>
                       <input type="range" min={0} max={1} step={0.01} value={material.metalness} onChange={(e) => {changeMaterialProperty(material, Number(e.target.value), 'metalness')}}/>
                     </li>
 
-                    <TextureManager material={material} property={'metalnessMap'} displayName="Metalness Map: "/>
+                    <TextureManager material={material} property={'metalnessMap'} displayName="Metalness Map: " forceUpdate={forceUpdate}/>
 
                   </ul>
               </div>
