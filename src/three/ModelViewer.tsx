@@ -67,6 +67,17 @@ const ModelViewer = ({file}:ModelFile) => {
     const [shadowplaneActive, setshadowplaneActive] = useState<boolean>(false);
     const [groundY, setGroundY] = useState(0);
 
+    const [directionalLightPosition, setdirectionalLightPosition] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, 0));
+    const [directionalLightIntensity, setdirectionalLightIntensity] = useState<number>(0)
+
+    const changeDirectionalLightPosition = (axis: "x" | "y" | "z", value : number) => {
+        setdirectionalLightPosition((prev) =>{
+            const newPosition = prev.clone();
+            newPosition[axis] = value;
+            return newPosition;
+        });
+    }
+
     useEffect(() => {
 
         if (!file) return;
@@ -84,12 +95,17 @@ const ModelViewer = ({file}:ModelFile) => {
   return (
     <div className="viewer-container">
         <div className="materials-panel">
-            <EnvironmentSettings shadowplaneActive={shadowplaneActive} setshadowplaneActive={setshadowplaneActive}/>
+            <EnvironmentSettings shadowplaneActive={shadowplaneActive} 
+                                setshadowplaneActive={setshadowplaneActive} 
+                                directionalLightPosition={directionalLightPosition} 
+                                changeDirectionalLightPosition={changeDirectionalLightPosition}
+                                directionalLightIntensity={directionalLightIntensity}
+                                setdirectionalLightIntensity={setdirectionalLightIntensity}/>
         </div>
         <div className="model-viewer">
             <Canvas dpr={1} shadows>
                 <ambientLight intensity={0.5} />
-                <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
+                <directionalLight position={directionalLightPosition} intensity={directionalLightIntensity} castShadow />
                 {modelURL && extension && <ModelLoader url={modelURL} extension={extension} onMaterialsLoaded={setMaterials} onGroundY={setGroundY}/>}
                 {shadowplaneActive && <ShadowPlane positionY={groundY}/>}
                 <OrbitControls enableDamping />
