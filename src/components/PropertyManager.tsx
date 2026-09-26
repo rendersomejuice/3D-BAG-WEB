@@ -15,14 +15,15 @@ type MaterialColorProperty = "emissive" | "color";
 
 const PropertyManager = ({material, property, displayName, forceUpdate} : PropertyManagerProps) => {
 
-function changeMaterialProperty(
-    material:THREE.MeshStandardMaterial, 
-    value : number | boolean | THREE.Color, 
-    property : MaterialNumericProperty | MaterialBooleanProperty | MaterialColorProperty ){
-        (material[property] as number | boolean | THREE.Color) = value;
-        property === "transparent" ? material.needsUpdate = true : material.needsUpdate = false;
-        forceUpdate((prev:any) => prev + 1);
-}
+    function changeMaterialProperty(
+        material:THREE.MeshStandardMaterial, 
+        value : number | boolean | THREE.Color, 
+        property : MaterialNumericProperty | MaterialBooleanProperty | MaterialColorProperty ){
+            (material[property] as number | boolean | THREE.Color) = value;
+            property === "transparent" ? material.needsUpdate = true : material.needsUpdate = false;
+            forceUpdate((prev:any) => prev + 1);
+    }
+    
     const value:any = material[property];
     if(value instanceof THREE.Color){
         return (
