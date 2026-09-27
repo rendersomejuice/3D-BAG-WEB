@@ -62,7 +62,7 @@ const dropTexture = (material:THREE.MeshStandardMaterial, property : MaterialTex
         <li>
             <span className="property-title">{ displayName }</span> 
             <span className="property-container">
-            <span className="property">{material[property]?.name}</span>
+            <span className="property text-small">{material[property]?.name}</span>
             <label className="property-button">
             ...
             <input type="file" accept=".png, .jpg, .jpeg" onChange={(e) =>{handleTextureChange(material, e, property)}} style={{ display: "none" }}/>

@@ -80,7 +80,7 @@ const EnvironmentSettings = ({shadowplaneActive, setshadowplaneActive, changeDir
             <ul>
                 <div className="property-title">Directional Light: </div>
 
-                <div>
+                <div className="property-wrapper">
                     <span className="property">Rotation:</span>
                     <input
                         type="range"
@@ -95,7 +95,7 @@ const EnvironmentSettings = ({shadowplaneActive, setshadowplaneActive, changeDir
                     {lightRotation}°
                 </div>
 
-                <div>
+                <div className="property-wrapper">
                     <span className="property">Height:</span>
                     <input
                         type="range"
@@ -110,7 +110,7 @@ const EnvironmentSettings = ({shadowplaneActive, setshadowplaneActive, changeDir
                     {directionalLightPosition.y}
                 </div>
 
-                <div>
+                <div className="property-wrapper">
                     <span className="property">Distance:</span>
                     <input
                         type="range"
@@ -124,8 +124,8 @@ const EnvironmentSettings = ({shadowplaneActive, setshadowplaneActive, changeDir
                     />
                     {lightDistance}
                 </div>
-                <div><span className="property">Intensity:</span><input type="range" step={0.01} min={0} max={100} value={directionalLightIntensity} onChange={(e) => {setdirectionalLightIntensity(Number(e.target.value))}}/>{directionalLightIntensity}</div>
-                <div>
+                <div className="property-wrapper"><span className="property">Intensity:</span><input type="range" step={0.01} min={0} max={100} value={directionalLightIntensity} onChange={(e) => {setdirectionalLightIntensity(Number(e.target.value))}}/>{directionalLightIntensity}</div>
+                <div className="property-wrapper">
                     <span className="property">Color:</span>
                     <input type="color" id="color" value={dlColor} onChange={(e) => {setdlColor(e.target.value)} } />
                 </div>
@@ -140,7 +140,10 @@ const EnvironmentSettings = ({shadowplaneActive, setshadowplaneActive, changeDir
                             <option key={name} value={url}>{name}</option>
                         ))}
                     </select>
-                    <div><span className="property-title">Skybox Background: </span><input type="checkbox" checked={skyboxIsBG} onChange={(e) => {setskyboxIsBG(e.target.checked)}}/></div>
+                    
+                </li>
+                <li>
+                    <div className="property-wrapper"><span className="property-title">Skybox Background: </span><input type="checkbox" checked={skyboxIsBG} onChange={(e) => {setskyboxIsBG(e.target.checked)}}/></div>
                 </li>
             </ul>
         </div>

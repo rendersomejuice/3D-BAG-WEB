@@ -22,7 +22,7 @@ const MaterialsViewer = ({materials} : MaterialsViewerProps) => {
         <hr/>
           {materials.map((material, index) => (
               <div key={index} className="text-white">
-                  {material.name}
+                  <h3>{material.name}</h3>
                   <ul>
 
                     <TextureManager material={material} property={'map'} displayName="Diffuse Map: " forceUpdate={forceUpdate}/>
