@@ -1,4 +1,3 @@
-import { Center } from "@react-three/drei";
 interface ShadowPlaneProps {
     positionY: number;
 }
