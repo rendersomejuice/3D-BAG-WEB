@@ -8,6 +8,8 @@ import FPSLimiter from "../components/utils/FPSLimiter"
 import * as THREE from "three";
 import EnvironmentSettings from "../components/EnvironmentSettings";
 import ShadowPlane from "./ShadowPlane";
+import DirectionalLightGizmo from "../components/utils/DirectionalLightGizmo";
+import Skybox from "../components/Skybox";
 
 export interface ModelFile{
     file:File | null
@@ -59,16 +61,21 @@ const ModelLoader = ({ url, extension, onMaterialsLoaded, onGroundY}: ModelLoade
 };
 
 const ModelViewer = ({file}:ModelFile) => {
-
+    //model
     const [modelURL, setModelURL] = useState<string | null>(null);
     const [materials, setMaterials] = useState<THREE.MeshStandardMaterial[]>([]);
     const extension = file?.name.split(".").pop()?.toLowerCase();
-
+    //shadow plane
     const [shadowplaneActive, setshadowplaneActive] = useState<boolean>(false);
     const [groundY, setGroundY] = useState(0);
-
-    const [directionalLightPosition, setdirectionalLightPosition] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, 0));
-    const [directionalLightIntensity, setdirectionalLightIntensity] = useState<number>(0)
+    //directional light
+    const [directionalLightPosition, setdirectionalLightPosition] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, 100));
+    const [directionalLightIntensity, setdirectionalLightIntensity] = useState<number>(1)
+    const [dlGizmoVisible, setdlGizmoVisible] = useState<boolean>(false);
+    const [dlColor, setdlColor] = useState<string>('#ffffff');
+    //skybox
+    const [skyboxFile, setSkyboxFile] = useState<string>('');
+    const [skyboxIsBG, setskyboxIsBG] = useState<boolean>(true);
 
     const changeDirectionalLightPosition = (axis: "x" | "y" | "z", value : number) => {
         setdirectionalLightPosition((prev) =>{
@@ -100,12 +107,18 @@ const ModelViewer = ({file}:ModelFile) => {
                                 directionalLightPosition={directionalLightPosition} 
                                 changeDirectionalLightPosition={changeDirectionalLightPosition}
                                 directionalLightIntensity={directionalLightIntensity}
-                                setdirectionalLightIntensity={setdirectionalLightIntensity}/>
+                                setdirectionalLightIntensity={setdirectionalLightIntensity}
+                                setdlGizmoVisible={setdlGizmoVisible}
+                                setdlColor={setdlColor} dlColor={dlColor}
+                                skyboxFile={skyboxFile} setSkyboxFile={setSkyboxFile} 
+                                skyboxIsBG={skyboxIsBG} setskyboxIsBG={setskyboxIsBG}/>
         </div>
         <div className="model-viewer">
             <Canvas dpr={1} shadows>
                 <ambientLight intensity={0.5} />
-                <directionalLight position={directionalLightPosition} intensity={directionalLightIntensity} castShadow />
+                <directionalLight position={directionalLightPosition} intensity={directionalLightIntensity} color={dlColor} castShadow />
+                { skyboxFile !== '' && <Skybox isBackground={skyboxIsBG} file={skyboxFile}/>}
+                { dlGizmoVisible && <DirectionalLightGizmo position={directionalLightPosition}/>}
                 {modelURL && extension && <ModelLoader url={modelURL} extension={extension} onMaterialsLoaded={setMaterials} onGroundY={setGroundY}/>}
                 {shadowplaneActive && <ShadowPlane positionY={groundY}/>}
                 <OrbitControls enableDamping />

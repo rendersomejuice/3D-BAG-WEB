@@ -20,12 +20,15 @@ const Interface = () => {
     }
 
     return (
+        <>
         <section className="general-section">
             <h1>3D BAG WEB</h1>
             <ModelViewer file={file}/>
             <input ref={fileInputRef} type="file" accept=".fbx, .obj, .glb" onChange={handleFileChange} style={{display:'none'}}/>
             <button onClick={handleButtonToInput}>Load Model</button><p className="text-white inline">.glb, .fbx</p>
         </section>
+        <p style={{"textAlign" : 'center', 'fontSize' : '0.8em', 'padding': '5px', 'color': 'grey'}}>3D-BAG-WEB is a tool developed by Alejandro Garcia Pol(RenderSomeJuice).</p>
+        </>
     )
 }
 
