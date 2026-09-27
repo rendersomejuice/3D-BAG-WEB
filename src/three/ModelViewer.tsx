@@ -3,6 +3,7 @@ import { Canvas, useLoader } from "@react-three/fiber"
 import { useEffect, useState } from "react"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 import { standarizeMaterials, getMaterials } from "../utils/StandarizeMaterials";
+import { normalizeModelScale } from "../utils/StandarizeModels";
 import MaterialsViewer from "../components/MaterialsViewer";
 import FPSLimiter from "../components/utils/FPSLimiter"
 import * as THREE from "three";
@@ -22,6 +23,11 @@ interface ModelLoaderProps {
     onGroundY: (y: number) => void;
 }
 
+interface LoadedModel {
+    url: string;
+    extension: string;
+}
+
 const ModelLoader = ({ url, extension, onMaterialsLoaded, onGroundY}: ModelLoaderProps) => {
 
     let model: THREE.Object3D | null = null;
@@ -29,10 +35,12 @@ const ModelLoader = ({ url, extension, onMaterialsLoaded, onGroundY}: ModelLoade
     if(extension === 'glb'){
         const { scene } =  useGLTF(url); 
         model = scene;
+        normalizeModelScale(model);
     }else if(extension === 'fbx'){
         const fbx = useLoader(FBXLoader, url);
         model = fbx;
         standarizeMaterials(fbx);
+        normalizeModelScale(fbx);
     }
 
     useEffect(() => {
@@ -62,9 +70,8 @@ const ModelLoader = ({ url, extension, onMaterialsLoaded, onGroundY}: ModelLoade
 
 const ModelViewer = ({file}:ModelFile) => {
     //model
-    const [modelURL, setModelURL] = useState<string | null>(null);
+    const [model, setModel] = useState<LoadedModel | null>(null);
     const [materials, setMaterials] = useState<THREE.MeshStandardMaterial[]>([]);
-    const extension = file?.name.split(".").pop()?.toLowerCase();
     //shadow plane
     const [shadowplaneActive, setshadowplaneActive] = useState<boolean>(false);
     const [groundY, setGroundY] = useState(0);
@@ -97,14 +104,18 @@ const ModelViewer = ({file}:ModelFile) => {
         if (!file) return;
 
         const url = URL.createObjectURL(file);
-        setModelURL(url);
+        const extension = file.name.split(".").pop()?.toLowerCase();
+
+        if (!extension) return;
+
+        setModel({url, extension});
 
         return () => {
             URL.revokeObjectURL(url);
             setMaterials([]);
         };
 
-    },[file]);
+    }, [file]);
 
   return (
     <div className="viewer-container">
@@ -127,8 +138,8 @@ const ModelViewer = ({file}:ModelFile) => {
                 <directionalLight position={directionalLightPosition} intensity={directionalLightIntensity} color={dlColor} castShadow />
                 { skyboxFile !== '' && <Skybox isBackground={skyboxIsBG} file={skyboxFile}/>}
                 { dlGizmoVisible && <DirectionalLightGizmo position={directionalLightPosition}/>}
-                {modelURL && extension && <ModelLoader url={modelURL} extension={extension} onMaterialsLoaded={setMaterials} onGroundY={setGroundY}/>}
-                {shadowplaneActive && <ShadowPlane positionY={groundY}/>}
+                { model && (<ModelLoader url={model.url} extension={model.extension} onMaterialsLoaded={setMaterials} onGroundY={setGroundY}/>)}
+                { shadowplaneActive && <ShadowPlane positionY={groundY}/>}
                 <OrbitControls enableDamping />
                 <FPSLimiter/>
             </Canvas>
