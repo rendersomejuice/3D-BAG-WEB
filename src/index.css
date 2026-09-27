@@ -76,6 +76,10 @@ li{
   cursor: pointer;
 }
 
+.big-button{
+  height: 24px;
+}
+
 .general-section{
     width: fit-content;
     margin: 0 auto;

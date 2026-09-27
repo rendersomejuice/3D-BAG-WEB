@@ -9,7 +9,7 @@ import * as THREE from "three";
 import EnvironmentSettings from "../components/EnvironmentSettings";
 import ShadowPlane from "./ShadowPlane";
 import DirectionalLightGizmo from "../components/utils/DirectionalLightGizmo";
-import Skybox from "../components/Skybox";
+import Skybox from "./Skybox";
 
 export interface ModelFile{
     file:File | null
@@ -85,6 +85,13 @@ const ModelViewer = ({file}:ModelFile) => {
         });
     }
 
+    const handleSkyboxChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const url = URL.createObjectURL(file) + `#.${file.name.split(".").pop()}`;
+        setSkyboxFile(url);
+    }
+
     useEffect(() => {
 
         if (!file) return;
@@ -111,7 +118,8 @@ const ModelViewer = ({file}:ModelFile) => {
                                 setdlGizmoVisible={setdlGizmoVisible}
                                 setdlColor={setdlColor} dlColor={dlColor}
                                 skyboxFile={skyboxFile} setSkyboxFile={setSkyboxFile} 
-                                skyboxIsBG={skyboxIsBG} setskyboxIsBG={setskyboxIsBG}/>
+                                skyboxIsBG={skyboxIsBG} setskyboxIsBG={setskyboxIsBG}
+                                handleSkyboxChange={handleSkyboxChange}/>
         </div>
         <div className="model-viewer">
             <Canvas dpr={1} shadows>

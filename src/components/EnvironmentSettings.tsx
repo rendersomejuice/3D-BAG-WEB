@@ -15,17 +15,19 @@ interface EnvironmentSettingsProps{
     skyboxFile : string,
     setSkyboxFile : (value : string) => void,
     skyboxIsBG : boolean,
-    setskyboxIsBG : (value : boolean) => void
+    setskyboxIsBG : (value : boolean) => void,
+    handleSkyboxChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const EnvironmentSettings = ({shadowplaneActive, setshadowplaneActive, changeDirectionalLightPosition,
                              directionalLightPosition, directionalLightIntensity, setdirectionalLightIntensity,
-                             setdlGizmoVisible, setdlColor, dlColor, skyboxFile, setSkyboxFile, skyboxIsBG, setskyboxIsBG } : EnvironmentSettingsProps) => {
+                             setdlGizmoVisible, setdlColor, dlColor, skyboxFile, setSkyboxFile, skyboxIsBG, setskyboxIsBG, 
+                             handleSkyboxChange } : EnvironmentSettingsProps) => {
 
     const [backgroundColor, setBackgroundColor] = useState<string>("grey");
 
     const [lightRotation, setLightRotation] = useState<number>(0);
-    const [lightDistance, setLightDistance] = useState<number>(100);
+    const [lightDistance, setLightDistance] = useState<number>(2);
 
 
     const handleChangeBackgroundColor = (e : string) => {
@@ -144,6 +146,9 @@ const EnvironmentSettings = ({shadowplaneActive, setshadowplaneActive, changeDir
                 </li>
                 <li>
                     <div className="property-wrapper"><span className="property-title">Skybox Background: </span><input type="checkbox" checked={skyboxIsBG} onChange={(e) => {setskyboxIsBG(e.target.checked)}}/></div>
+                    <label className="property-button big-button">{"Load Skybox(.hdr, .exr)"}
+                        <input type="file" accept=".hdr, .exr" style={{'display':'none'}} onChange={handleSkyboxChange}/>
+                    </label>
                 </li>
             </ul>
         </div>
